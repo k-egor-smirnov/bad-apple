@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <style>
+        body {
+            background: #000;
+            color: #fff;
+            font-family: monospace;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const frames = []
+        
+        window.onload = function() {
+            const audio = document.getElementById('audio')
+            const volumeInput = document.getElementById('volume')
+            const element = document.getElementById('output')
+
+            volumeInput.value = audio.volume * 100
+
+            volumeInput.oninput = function() {
+                audio.volume = (volumeInput.value / 100)
+            }
+
+            for(let i = 0; i <= 21; i++) {
+                fetch(`chunks/chunk${i}.html`)
+                    .then(data => {
+                        return data.text()
+                    })
+                    .then(data => {
+                        const chunk = data.split('---END OF FRAME---')
+                        const chunkFrames = []
+                        
+                        chunk.forEach(frame => {
+                            frames.push(frame)
+                        })
+                        
+                        // frames[i * 240] = chunkFrames[i]
+                    })
+                    .then(() => {
+                        if (i === 21) {
+                            console.log('complete!')
+                            document.getElementById('audio').play()
+                            startAnimation(element)
+                        }
+                        
+                    })
+            }        
+        };
+
+        let j = 0
+        function startAnimation(element) {
+            let interval = setInterval(() => {
+                if(j > frames.length) {
+                    clearInterval(interval)
+                } else {
+                    console.log(frames[j].length)
+                    element.innerHTML = frames[j]
+                    j++
+                }
+                
+            }, 41.6666666667)
+        }
+    </script>
+
+    <h1>Bad Apple text version</h1>
+
+    <pre id="output">Loading...</pre>
+    <audio id="audio">
+        <source src="audio.ogg" type="audio/ogg">
+        Your browser does not support the audio tag.
+    </audio>
+    <span style="vertical-align: super; ">Volume:</span> 
+    <input type="range" id="volume">
+    <p>Checkout my <a href="http://github.com/k-egor-smirnov">GitHub</a> to find more my intresting projects</p>
+    <p><a href="http://github.com/k-egor-smirnov/bad-apple">Bad Apple repository</a></p>
+</body>
+</html>
