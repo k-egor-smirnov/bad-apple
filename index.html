@@ -42,7 +42,7 @@
                         const chunkFrames = []
                         
                         chunk.forEach(frame => {
-                            frames.push(frame)
+                            frame.length > 0 && frames.push(frame)
                         })
                         
                         i++
